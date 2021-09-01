@@ -1,0 +1,38 @@
+version: "3.7"
+
+services:
+  passmanager:
+    image: passmanager
+    #    restart: "no"
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    networks:
+      - pass-mysql
+    depends_on:
+      - maria_db
+  #    links:
+  #      - maria_db:app_db
+  #    command: sh -c './wait-for mysql_db:3306 -- npm start'
+
+  maria_db:
+    image: mariadb
+    restart: on-failure
+    #    ports:
+    #      - "3306:3306"
+    networks:
+      - pass-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456a@
+      MYSQL_DATABASE: passm
+      MYSQL_USER: root
+      MYSQL_PASSWORD: 123456a@
+    volumes:
+      - ./data:/var/lib/mysql
+
+volumes:
+  mysql-data:
+networks:
+  pass-mysql:
